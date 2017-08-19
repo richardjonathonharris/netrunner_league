@@ -1,0 +1,3 @@
+netrunner_league/
+*.pyc
+*/__pycache__/
