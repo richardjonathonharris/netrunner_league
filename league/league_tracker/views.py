@@ -56,3 +56,11 @@ def create_record(request):
     else:
         form = RecordForm()
     return render(request, 'add_records.html', {'form': form})
+
+def return_all_standings(request):
+    all_records = Records.objects.all()
+    context = {
+            'record': all_record,
+            }
+    return render(request, 'index.html', context)
+
