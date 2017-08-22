@@ -19,5 +19,10 @@ from league_tracker import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^add_user/', views.create_user),
+    url(r'^add_league/', views.create_league),
+    url(r'^add_deck/', views.create_deck),
+    url(r'^add_record/', views.create_record),
+    url(r'^thanks/', views.thanks),
     url(r'^$', views.index),
 ]

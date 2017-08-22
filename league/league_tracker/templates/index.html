@@ -1,10 +1,27 @@
-<html>
-    <head>
-        <title>
-            Howdy!
-        </title>
-    </head>
-    <body>
-        <h1>This is a website</h1>
-    </body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>This is a website</h1>
+{% for u in user %}
+    <p> Name: {{ u.name }} </p>
+{% endfor %}
+<br />
+{% for r in record %}
+    <p> Game Number: {{ r.id }} </p>
+    <p> Player: {{ r.user_id }} </p>
+    <p> Opponent: {{ r.opponent_id }} </p>
+    <p> Status: {{ r.get_status_display }} </p>
+    <p> Points: {{ r.points_win }} - {{ r.points_lose }} </p>
+{% endfor %}
+<br />
+{% for d in deck %}
+    <p> Name: {{ d.deck_name }} </p>
+    <p> Faction: {{ d.get_faction_display }} </p>
+    <p> Side: {{ d.get_side_display }} </p>
+    <p> League: {{ d.league }} </p>
+{% endfor %}
+{% for l in league %}
+<p> League: {{ l.league_id }} {{ l.league_name }}</p>
+{% endfor %}
+
+{% endblock %}
