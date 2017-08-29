@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
-from league_tracker.models import User, Records, Decks, League
-from league_tracker.forms import UserForm, LeagueForm, DeckForm, RecordForm
+from league_tracker.models import User, Records, Decks
+from league_tracker.forms import UserForm, DeckForm, RecordForm
 from django.http import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
@@ -10,12 +10,10 @@ def index(request):
     all_user = User.objects.all()
     all_record = Records.objects.all()
     all_deck = Decks.objects.all()
-    all_league = League.objects.all()
     context = {
             'user': all_user,
             'record': all_record,
             'deck': all_deck,
-            'league': all_league,
             }
     return render(request, 'index.html', context)
 
@@ -30,15 +28,6 @@ def create_user(request):
     else:
         form = UserForm()
     return render(request, 'add_user.html', {'form': form})
-
-def create_league(request):
-    if request.method == 'POST':
-        form = LeagueForm(request.POST)
-        form.save()
-        return HttpResponseRedirect('/')
-    else:
-        form = LeagueForm()
-    return render(request, 'add_league.html', {'form': form})
 
 def create_deck(request):
     if request.method == 'POST':
@@ -67,6 +56,7 @@ def return_all_standings(request):
 
 def records(request, id):
     records = Records.objects.filter(user_id_id=id)
+    user = User.objects.get(pk=id)
     grouped = records.values('opponent_id', 'status').annotate(dcount=Count('opponent_id'))
     opponents = [item['opponent_id'] for item in grouped]
     opp_records = Records.objects.filter(user_id_id__in=opponents)
@@ -93,11 +83,10 @@ def records(request, id):
         numer += (points / matches_played)
         denom += 1
     strength_of_schedule = numer / denom
-    print('SoS is {}'.format(strength_of_schedule))
     context = {
             'sos': strength_of_schedule,
             'records': records,
+            'user': user
             }
-    print(records.values())
     return render(request, 'standings.html', context)
 
