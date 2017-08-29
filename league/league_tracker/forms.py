@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from league_tracker.models import User, Decks, Records
+from league_tracker.models import User, Decks, Records, Event
 
 class UserForm(forms.ModelForm):
    class Meta:
@@ -15,4 +15,9 @@ class DeckForm(forms.ModelForm):
 class RecordForm(forms.ModelForm):
     class Meta:
         model = Records
+        fields = '__all__'
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
         fields = '__all__'

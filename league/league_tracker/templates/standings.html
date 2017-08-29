@@ -1,17 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{{ user.name }} {{ sos }}
+<h1>Showing results for {{ user.name }} @ SoS of {{ sos }}</h1>
 
 <table>
     <tr>
         <th>Opponent</th>
-        <th>Status</th>
+        <th>Corporation</th>
+        <th>Runner</th>
+        <th>Game Night</th>
+        <th>Round Number</th>
     </tr>
 {% for rec in records %}
 <tr>
     <td> {{ rec.opponent_id }} </td>
-    <td> {{ rec.status }}</td>
+    <td> {{ rec.corp_status }}</td>
+    <td> {{ rec.runner_status }}</td>
+    <td> {{ rec.game }}</td>
+    <td> {{ rec.round_num }}</td>
 </tr>
 {% endfor %}
 

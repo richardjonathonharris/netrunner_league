@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.functional import cached_property
 from django.template.defaultfilters import slugify
 
 # Create your models here.
@@ -32,11 +33,41 @@ class Decks(models.Model):
     side = models.CharField(max_length=1, choices=SIDES)
     faction = models.CharField(max_length=1, choices=FACTIONS)
 
+class Event(models.Model):
+    name = models.CharField(max_length=100)
+    date = models.DateField(auto_now_add=True)
+    def __str__(self):
+        return self.name
+
+class SoSManager(models.Manager):
+    def sos(self, user_id, event_id=None): # need to add in filtering by event
+        own_records = self.filter(user_id_id=user_id)
+        opponents = [rec.opponent_id_id for rec in own_records]
+        opponents_records = self.filter(user_id_id__in=opponents).exclude(opponent_id_id=user_id)
+        denom = 0
+        num = 0
+        for opponent in opponents:
+            runner_results = list(opponents_records.filter(user_id_id=opponent).values_list('runner_status', flat=True))
+            corp_results = list(opponents_records.filter(user_id_id=opponent).values_list('corp_status', flat=True))
+            points = sum([3 for item in runner_results if item =='WI']) # need to add in timed win and loss and tie
+            points += sum([3 for item in corp_results if item=='WI'])
+            points /= len(runner_results)
+            denom += points
+            num += 1
+        return denom/num
+
 class Records(models.Model):
     WIN_LOSE = (
-            ('W', 'Win'),
-            ('L', 'Lose')
+            ('WI', 'Win'),
+            ('TW', 'Timed Win'),
+            ('TL', 'Timed Loss'),
+            ('LO', 'Lose'),
+            ('TI', 'Tie'),
             )
     user_id = models.ForeignKey(User, related_name='+')
     opponent_id = models.ForeignKey(User, related_name='+')
-    status = models.CharField(max_length=1, choices=WIN_LOSE)
+    corp_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True)
+    runner_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True)
+    game = models.ForeignKey(Event, related_name='+', null=True, blank=True)
+    round_num = models.IntegerField(null=True)
+    objects = SoSManager()
