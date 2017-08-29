@@ -39,8 +39,26 @@ def create_deck(request):
     return render(request, 'add_decks.html', {'form': form})
 
 def create_record(request):
+    ### When somebody puts in a result we want to put in the reverse as well
+    ### for example: user 3 sweeps user 1, we want to include a result for
+    ### user 3 - user 1 6-0 points
+    ### user 1 - user 3 0-6 points
     if request.method == 'POST':
         form = RecordForm(request.POST)
+        reverse_form = request.POST.copy()
+        reverse_form['opponent_id'] = request.POST['user_id']
+        reverse_form['user_id'] = request.POST['opponent_id']
+        flip_dict = {
+                'WI': 'LO',
+                'LO': 'WI',
+                'TW': 'TL',
+                'TL': 'TW',
+                'TI': 'TI',
+                }
+        for stat in ['runner_status', 'corp_status']:
+            reverse_form[stat] = flip_dict[request.POST[stat]]
+        form.save()
+        form = RecordForm(reverse_form)
         form.save()
         return HttpResponseRedirect('/')
     else:
