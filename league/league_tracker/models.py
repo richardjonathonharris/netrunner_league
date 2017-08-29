@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 
 # Create your models here.
 
@@ -50,5 +51,3 @@ class Records(models.Model):
     points_lose = models.IntegerField()
     flatline = models.BooleanField()
     league = models.ForeignKey(League)
-
-

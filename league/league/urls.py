@@ -24,5 +24,7 @@ urlpatterns = [
     url(r'^add_deck/', views.create_deck),
     url(r'^add_record/', views.create_record),
     url(r'^thanks/', views.thanks),
+    url(r'^records/(?P<id>\d+)/$',
+        views.records),
     url(r'^$', views.index),
 ]

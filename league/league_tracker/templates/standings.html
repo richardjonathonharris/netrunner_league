@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{{ sos }}
+
+<table>
+    <tr>
+        <th>Opponent</th>
+        <th>Status</th>
+    </tr>
+{% for rec in records %}
+<tr>
+    <td> {{ rec.opponent_id }} </td>
+    <td> {{ rec.status }}</td>
+</tr>
+{% endfor %}
+
+{% endblock %}
