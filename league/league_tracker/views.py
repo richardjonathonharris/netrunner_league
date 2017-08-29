@@ -66,11 +66,13 @@ def return_all_standings(request):
 def records(request, id):
     records = Records.objects.filter(user_id_id=id)
     sos = Records.objects.sos(id)
+    esos = Records.objects.esos(id)
     user = User.objects.get(pk=id)
     context = {
             'records': records,
             'user': user,
             'sos': sos,
+            'esos': esos,
             }
     return render(request, 'standings.html', context)
 

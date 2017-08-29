@@ -49,12 +49,21 @@ class SoSManager(models.Manager):
         for opponent in opponents:
             runner_results = list(opponents_records.filter(user_id_id=opponent).values_list('runner_status', flat=True))
             corp_results = list(opponents_records.filter(user_id_id=opponent).values_list('corp_status', flat=True))
-            points = sum([3 for item in runner_results if item =='WI']) # need to add in timed win and loss and tie
-            points += sum([3 for item in corp_results if item=='WI'])
+            points = 0
+            for result in [runner_results, corp_results]:
+                points += sum([3 for item in result if item == 'WI']) 
+                points += sum([2 for item in result if item == 'TW'])
+                points += sum([1 for item in result if item == 'TI'])
             points /= len(runner_results)
             denom += points
             num += 1
         return denom/num
+
+    def esos(self, user_id, event_id=None):
+        own_records = self.filter(user_id_id=user_id)
+        opponents = [rec.opponent_id_id for rec in own_records]
+        opp_sos = [self.sos(opp) for opp in opponents]
+        return sum(opp_sos)/len(opp_sos)
 
 class Records(models.Model):
     WIN_LOSE = (
