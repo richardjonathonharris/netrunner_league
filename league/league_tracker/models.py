@@ -41,9 +41,14 @@ class Event(models.Model):
 
 class SoSManager(models.Manager):
     def sos(self, user_id, event_id=None): # need to add in filtering by event
-        own_records = self.filter(user_id_id=user_id)
-        opponents = [rec.opponent_id_id for rec in own_records]
-        opponents_records = self.filter(user_id_id__in=opponents).exclude(opponent_id_id=user_id)
+        if not event_id:
+            own_records = self.filter(user_id_id=user_id)
+            opponents = [rec.opponent_id_id for rec in own_records]
+            opponents_records = self.filter(user_id_id__in=opponents).exclude(opponent_id_id=user_id)
+        else:
+            own_records = self.filter(user_id_id=user_id).filter(game_id=event_id)
+            opponents = [rec.opponent_id_id for rec in own_records]
+            opponents_records = self.filter(user_id_id__in=opponents).filter(game_id=event_id).exclude(opponent_id_id=user_id)
         denom = 0
         num = 0
         for opponent in opponents:

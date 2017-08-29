@@ -1,6 +1,6 @@
-from django.db.models import Count
+from django.db.models import Count, Max
 from django.shortcuts import render, get_object_or_404
-from league_tracker.models import User, Records, Decks
+from league_tracker.models import User, Records, Decks, Event
 from league_tracker.forms import UserForm, DeckForm, RecordForm, EventForm
 from django.http import HttpResponse, HttpResponseRedirect
 
@@ -76,3 +76,16 @@ def records(request, id):
             }
     return render(request, 'standings.html', context)
 
+def current_records(request, id):
+    current_night = Event.objects.all().aggregate(Max('pk'))['pk__max']
+    records = Records.objects.filter(user_id_id=id).filter(game_id=current_night)
+    sos = Records.objects.sos(id, current_night)
+    esos = Records.objects.esos(id, current_night)
+    user = User.objects.get(pk=id)
+    context = {
+            'records': records,
+            'user': user,
+            'sos': sos,
+            'esos': esos,
+            }
+    return render(request, 'standings.html', context)
