@@ -1,4 +1,4 @@
-from django.db.models import Count, Max
+from django.db.models import Count, Max, F
 from django.shortcuts import render, get_object_or_404
 from league_tracker.models import User, Records, Decks, Event
 from league_tracker.forms import UserForm, DeckForm, RecordForm, EventForm
@@ -107,3 +107,8 @@ def current_records(request, id):
             'esos': esos,
             }
     return render(request, 'standings.html', context)
+
+def all_records(request, game_night=None):
+    records = Records.objects.annotate(odd=F('pk') % 2).filter(odd=True)
+    print(records.values())
+    return HttpResponseRedirect('/')

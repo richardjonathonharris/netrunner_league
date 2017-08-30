@@ -84,4 +84,5 @@ class Records(models.Model):
     runner_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True)
     game = models.ForeignKey(Event, related_name='+', null=True, blank=True)
     round_num = models.IntegerField(null=True)
+    display = models.BooleanField(default=True)
     objects = SoSManager()
