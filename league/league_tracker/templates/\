@@ -115,7 +115,7 @@ def all_records(request, game_night=None):
     stats = {}
     for player in all_players:
         stats[player] = {
-                'name': User.objects.filter(user_id=player).values('name')[0]['name'],
+                'name': User.objects.filter(user_id=player)['name'],
                 'points': Records.stats.total_points(player),
                 'sos': Records.stats.sos(player),
                 'esos': Records.stats.esos(player)

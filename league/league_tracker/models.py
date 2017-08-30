@@ -39,8 +39,8 @@ class Event(models.Model):
     def __str__(self):
         return self.name
 
-class SoSManager(models.Manager):
-    def sos(self, user_id, event_id=None): # need to add in filtering by event
+class StatsManager(models.Manager):
+    def sos(self, user_id, event_id=None): # note we need to figure out a way to exclude BYEs
         if not event_id:
             own_records = self.filter(user_id_id=user_id)
             opponents = [rec.opponent_id_id for rec in own_records]
@@ -57,8 +57,12 @@ class SoSManager(models.Manager):
             points = 0
             for result in [runner_results, corp_results]:
                 points += sum([3 for item in result if item == 'WI']) 
+                if opponent == 21:
+                    print(result) # ok SOS is borked here. What's going on?
                 points += sum([2 for item in result if item == 'TW'])
                 points += sum([1 for item in result if item == 'TI'])
+            if user_id == 17:
+                print('opponent: {}, points: {}'.format(opponent, points))
             points /= len(runner_results)
             denom += points
             num += 1
@@ -69,6 +73,17 @@ class SoSManager(models.Manager):
         opponents = [rec.opponent_id_id for rec in own_records]
         opp_sos = [self.sos(opp) for opp in opponents]
         return sum(opp_sos)/len(opp_sos)
+    
+    def total_points(self, user_id):
+        own_records = self.filter(user_id_id=user_id)
+        runner_results = list(own_records.values_list('runner_status', flat=True))
+        corp_results = list(own_records.values_list('corp_status', flat=True))
+        points = 0
+        for result in [runner_results, corp_results]:
+            points += sum([3 for item in result if item == 'WI']) 
+            points += sum([2 for item in result if item == 'TW'])
+            points += sum([1 for item in result if item == 'TI'])
+        return points
 
 class Records(models.Model):
     WIN_LOSE = (
@@ -85,4 +100,5 @@ class Records(models.Model):
     game = models.ForeignKey(Event, related_name='+', null=True, blank=True)
     round_num = models.IntegerField(null=True)
     display = models.BooleanField(default=True)
-    objects = SoSManager()
+    objects = models.Manager()
+    stats = StatsManager()

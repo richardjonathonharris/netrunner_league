@@ -3,6 +3,24 @@
 
 <table>
     <tr>
+        <th>Player Name</th>
+        <th>Total Points</th>
+        <th>Strength of Schedule</th>
+        <th>Extended Strength of Schedule</th>
+    </tr>
+
+{% for key, value in stats.items|dictsortreversed:"1.points" %}
+<tr>
+    <td>{{ value.name }} {{ key }}</td> 
+    <td>{{ value.points }}</td> 
+    <td>{{ value.sos|floatformat:"2" }}</td> 
+    <td>{{ value.esos|floatformat:"2" }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<table>
+    <tr>
         <th>Player</th>
         <th>Opponent</th>
         <th>As Runner</th>
@@ -29,6 +47,6 @@
 {% endfor %}
 {% endfor %}
 {% endfor %}
-    
+</table>
 
 {% endblock %}
