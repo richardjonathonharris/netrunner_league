@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<table>
+    <tr>
+        <th>Player</th>
+        <th>Opponent</th>
+        <th>As Runner</th>
+        <th>As Corporation</th>
+    </tr>
+
+{% regroup records|dictsort:"game_id" by game_id as game_list %}
+{% for game in game_list %}
+<tr>
+    <td colspan="4">{{ game.grouper }}</td>
+</tr>
+{% regroup game.list|dictsortreversed:"round_num" by round_num as round_list %}
+{% for round in round_list %}
+<tr>
+    <td colspan="4">{{ round.grouper }}</td>
+</tr>
+{% for item in round.list %}
+<tr>
+    <td>{{ item.user_id.name }}</td>
+    <td>{{ item.opponent_id.name }}</td>
+    <td>{{ item.runner_status }}</td>
+    <td>{{ item.corp_status }}</td>
+</tr>
+{% endfor %}
+{% endfor %}
+{% endfor %}
+    
+
+{% endblock %}

@@ -57,6 +57,7 @@ def create_record(request):
                 }
         for stat in ['runner_status', 'corp_status']:
             reverse_form[stat] = flip_dict[request.POST[stat]]
+        reverse_form['display'] = False
         form.save()
         form = RecordForm(reverse_form)
         form.save()
@@ -109,6 +110,9 @@ def current_records(request, id):
     return render(request, 'standings.html', context)
 
 def all_records(request, game_night=None):
-    records = Records.objects.annotate(odd=F('pk') % 2).filter(odd=True)
+    records = Records.objects.filter(display=True)
+    context = {
+            'records': records,
+            }
     print(records.values())
-    return HttpResponseRedirect('/')
+    return render(request, 'records.html', context)
