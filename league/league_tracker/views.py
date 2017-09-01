@@ -111,6 +111,7 @@ def current_records(request, id):
 
 def all_records(request, game_night=None):
     records = Records.objects.filter(display=True)
+    non_filtered_records = Records.objects.all()
     all_players = set(list(Records.objects.values_list('user_id_id', flat=True)))
     stats = {}
     for player in all_players:
@@ -120,8 +121,26 @@ def all_records(request, game_night=None):
                 'sos': Records.stats.sos(player),
                 'esos': Records.stats.esos(player)
                 }
+    runner_records = non_filtered_records.values('runner_status').annotate(runner_count=Count('runner_status')).order_by('-runner_status')
+    corp_records = non_filtered_records.values('corp_status').annotate(corp_count=Count('corp_status')).order_by('-corp_status')
+    runner = [record for record in runner_records]
+    corp = [record for record in corp_records]
+    win_rates = {}
+    for x in range(len(runner)):
+        newkey = runner[x]['runner_status']
+        win_rates[newkey] = {
+                'runner': runner[x].get('runner_count', 0),
+                'corp': corp[x].get('corp_count', 0),
+                }
+    for key in ['WI', 'LO', 'TW', 'TL', 'TI']:
+        if not win_rates.get(key, None):
+            win_rates[key] = {
+                    'runner': 0,
+                    'corp': 0
+                    }
     context = {
             'records': records,
             'stats': stats,
+            'win_rates': win_rates,
             }
     return render(request, 'records.html', context)

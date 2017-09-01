@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load extras %}
 {% block content %}
 
 <table>
@@ -47,6 +48,39 @@
 {% endfor %}
 {% endfor %}
 {% endfor %}
+</table>
+
+<table>
+    <tr>
+        <th> </th>
+        <th>Runner</th>
+        <th>Corporation</th>
+    </tr>
+    <tr>
+        <td>Wins</td>
+        <td>{{ win_rates.WI.runner }}</td>
+        <td>{{ win_rates.WI.corp }}</td>
+    </tr>
+    <tr>
+        <td>Losses</td>
+        <td>{{ win_rates.LO.runner }}</td>
+        <td>{{ win_rates.LO.corp }}</td>
+    </tr>
+    <tr>
+        <td>Timed Wins</td>
+        <td>{{ win_rates.TW.runner }}</td>
+        <td>{{ win_rates.TW.corp }}</td>
+    </tr>
+    <tr>
+        <td>Timed Losses</td>
+        <td>{{ win_rates.TL.runner }}</td>
+        <td>{{ win_rates.TL.corp }}</td>
+    </tr>
+    <tr>
+        <td>Ties</td>
+        <td>{{ win_rates.TI.runner }}</td>
+        <td>{{ win_rates.TI.corp }}</td>
+    </tr>
 </table>
 
 {% endblock %}

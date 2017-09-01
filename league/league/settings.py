@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'league_tracker'
+    'league_tracker',
+    'league_tracker.templatetags',
 ]
 
 MIDDLEWARE = [
