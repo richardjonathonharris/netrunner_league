@@ -97,6 +97,11 @@ def update_record(request, id):
         return HttpResponseRedirect('/')
     return render(request, 'update_records.html', {'form': form, 'id': id})
 
+def delete_record(request, id):
+    Records.objects.filter(id=id).delete()
+    return HttpResponseRedirect('/')
+    
+
 def create_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)

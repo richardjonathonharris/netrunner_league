@@ -26,17 +26,22 @@
         <th>Opponent</th>
         <th>As Runner</th>
         <th>As Corporation</th>
+        <th></th>
+        <th></th>
     </tr>
 
-{% regroup records|dictsort:"game_id" by game_id as game_list %}
+{% for record in records %}
+{% endfor %}
+
+{% regroup records|dictsort:"game_id" by game as game_list %}
 {% for game in game_list %}
 <tr>
-    <td colspan="4">{{ game.grouper }}</td>
+    <td colspan="6">{{ game.grouper }}</td>
 </tr>
 {% regroup game.list|dictsortreversed:"round_num" by round_num as round_list %}
 {% for round in round_list %}
 <tr>
-    <td colspan="4">{{ round.grouper }}</td>
+    <td colspan="6">{{ round.grouper }}</td>
 </tr>
 {% for item in round.list %}
 <tr>
@@ -44,6 +49,8 @@
     <td>{{ item.opponent_id.name }}</td>
     <td>{{ item.runner_status }}</td>
     <td>{{ item.corp_status }}</td>
+    <td><a href="/update_record/{{ item.id }}/">Update</a></td>
+    <td><a href="/delete_record/{{ item.id }}/">Delete</a></td>
 </tr>
 {% endfor %}
 {% endfor %}
