@@ -2,8 +2,6 @@ from django.db import models
 from django.utils.functional import cached_property
 from django.template.defaultfilters import slugify
 
-# Create your models here.
-
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=250)
@@ -29,7 +27,7 @@ class Decks(models.Model):
             ('L', 'Sunny Lebeau')
             )
     deck_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User) 
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE) 
     deck_name = models.CharField(max_length=250)
     side = models.CharField(max_length=1, choices=SIDES)
     faction = models.CharField(max_length=1, choices=FACTIONS)
@@ -98,11 +96,11 @@ class Records(models.Model):
             ('TI', 'Tie'),
             )
     choices = [(i, i) for i in range(1, 16)]
-    user_id = models.ForeignKey(User, related_name='+')
-    opponent_id = models.ForeignKey(User, related_name='+')
+    user_id = models.ForeignKey(User, related_name='+', on_delete=models.CASCADE)
+    opponent_id = models.ForeignKey(User, related_name='+', on_delete=models.CASCADE)
     corp_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True, default='WI')
     runner_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True, default='WI')
-    game = models.ForeignKey(Event, related_name='+', null=True, blank=True)
+    game = models.ForeignKey(Event, related_name='+', null=True, blank=True, on_delete=models.CASCADE)
     round_num = models.IntegerField(null=True, default=1, choices=choices)
     display = models.BooleanField(default=True)
     linked_record = models.IntegerField(null=True, default=1)
