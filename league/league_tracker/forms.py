@@ -16,7 +16,6 @@ class RecordForm(forms.ModelForm):
     user_id = forms.ModelChoiceField(queryset=User.objects, empty_label=None)
     opponent_id = forms.ModelChoiceField(queryset=User.objects, empty_label=None)
     game = forms.ModelChoiceField(queryset=Event.objects.order_by('-date'), empty_label=None)
-    print(Event.objects.order_by('-date').values())
     class Meta:
         model = Records
         fields = ['user_id', 'opponent_id', 'corp_status',
