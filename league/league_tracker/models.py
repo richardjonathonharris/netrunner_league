@@ -64,7 +64,10 @@ class StatsManager(models.Manager):
                 points += sum([1 for item in result if item == 'TI'])
             if user_id == 17:
                 print('opponent: {}, points: {}'.format(opponent, points))
-            points /= len(runner_results)
+            if len(runner_results) == 0:
+                points /= 1
+            else:
+                points /= len(runner_results)
             denom += points
             num += 1
         return denom/num
@@ -102,5 +105,6 @@ class Records(models.Model):
     game = models.ForeignKey(Event, related_name='+', null=True, blank=True)
     round_num = models.IntegerField(null=True, default=1, choices=choices)
     display = models.BooleanField(default=True)
+    linked_record = models.IntegerField(null=True, default=1)
     objects = models.Manager()
     stats = StatsManager()

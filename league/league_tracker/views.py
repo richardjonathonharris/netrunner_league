@@ -46,6 +46,8 @@ def create_record(request):
     if request.method == 'POST':
         form = RecordForm(request.POST)
         reverse_form = request.POST.copy()
+        original_form = request.POST.copy()
+        form.save()
         reverse_form['opponent_id'] = request.POST['user_id']
         reverse_form['user_id'] = request.POST['opponent_id']
         flip_dict = {
@@ -58,13 +60,42 @@ def create_record(request):
         for stat in ['runner_status', 'corp_status']:
             reverse_form[stat] = flip_dict[request.POST[stat]]
         reverse_form['display'] = False
-        form.save()
         form = RecordForm(reverse_form)
         form.save()
+        opp_record = Records.objects.last()
+        opp_record.linked_record = opp_record.pk - 1
+        opp_record.save()
+        user_record = Records.objects.get(pk=opp_record.pk-1)
+        user_record.linked_record = user_record.pk + 1
+        user_record.save()
         return HttpResponseRedirect('/')
     else:
         form = RecordForm()
     return render(request, 'add_records.html', {'form': form})
+
+def update_record(request, id):
+    record = Records.objects.get(pk=id)
+    form = RecordForm(request.POST or None, instance=record)
+    if request.method == 'POST':
+        form.save()
+        linked_record = Records.objects.get(pk=record.linked_record)
+        updated_record = Records.objects.get(pk=id)
+        linked_record.user_id = updated_record.opponent_id
+        linked_record.opponent_id = updated_record.user_id
+        linked_record.game = updated_record.game
+        linked_record.round_num = updated_record.round_num
+        flip_dict = {
+                'WI': 'LO',
+                'LO': 'WI',
+                'TW': 'TL',
+                'TL': 'TW',
+                'TI': 'TI',
+                }
+        linked_record.runner_status = flip_dict[updated_record.runner_status]
+        linked_record.corp_status = flip_dict[updated_record.corp_status]
+        linked_record.save()
+        return HttpResponseRedirect('/')
+    return render(request, 'update_records.html', {'form': form, 'id': id})
 
 def create_event(request):
     if request.method == 'POST':
