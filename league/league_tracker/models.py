@@ -93,12 +93,13 @@ class Records(models.Model):
             ('LO', 'Lose'),
             ('TI', 'Tie'),
             )
+    choices = [(i, i) for i in range(1, 16)]
     user_id = models.ForeignKey(User, related_name='+')
     opponent_id = models.ForeignKey(User, related_name='+')
-    corp_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True)
-    runner_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True)
+    corp_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True, default='WI')
+    runner_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True, default='WI')
     game = models.ForeignKey(Event, related_name='+', null=True, blank=True)
-    round_num = models.IntegerField(null=True)
+    round_num = models.IntegerField(null=True, default=1, choices=choices)
     display = models.BooleanField(default=True)
     objects = models.Manager()
     stats = StatsManager()
