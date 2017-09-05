@@ -10,18 +10,18 @@
     <p> Game Number: {{ r.id }} </p>
     <p> Player: {{ r.user_id }} </p>
     <p> Opponent: {{ r.opponent_id }} </p>
-    <p> Status: {{ r.get_status_display }} </p>
-    <p> Points: {{ r.points_win }} - {{ r.points_lose }} </p>
+    {{ r.round_num }}
 {% endfor %}
 <br />
 {% for d in deck %}
-    <p> Name: {{ d.deck_name }} </p>
-    <p> Faction: {{ d.get_faction_display }} </p>
-    <p> Side: {{ d.get_side_display }} </p>
-    <p> League: {{ d.league }} </p>
+    <p> User: {{ d.user_id }} </p>
+    <p> Game: {{ d.game }} </p>
+    <p> Runner ID: {{ d.runner_id }} </p>
+    <p> Runner Faction: {{ d.runner_faction }} </p>
+    <p> Corp ID: {{ d.corp_id }} </p>
+    <p> Corp Faction: {{ d.corp_faction }} </p>
 {% endfor %}
 {% for l in league %}
 <p> League: {{ l.league_id }} {{ l.league_name }}</p>
 {% endfor %}
-
 {% endblock %}

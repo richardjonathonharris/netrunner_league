@@ -1,7 +1,7 @@
 from django.db.models import Count, Max, F
 from django.shortcuts import render, get_object_or_404
 from league_tracker.models import User, Records, Decks, Event
-from league_tracker.forms import UserForm, DeckForm, RecordForm, EventForm
+from league_tracker.forms import UserForm, DeckForm, RecordForm, EventForm, get_faction_dictionary 
 from django.http import HttpResponse, HttpResponseRedirect
 
 # Create your views here.
@@ -31,15 +31,21 @@ def create_user(request):
 
 def create_deck(request):
     if request.method == 'POST':
-        form = DeckForm(request.POST)
+        runner_vals, corp_vals = get_faction_dictionary()
+        payload = request.POST.copy()
+        form = DeckForm(payload)
         form.save()
+        updater = Decks.objects.last()
+        updater.runner_faction = runner_vals[payload['runner_id']]
+        updater.corp_faction = corp_vals[payload['corp_id']]
+        updater.save()
         return HttpResponseRedirect('/')
     else:
         form = DeckForm()
     return render(request, 'add_decks.html', {'form': form})
 
 def create_record(request):
-    ### When somebody puts in a result we want to put in the reverse as well
+    ### When somebody puts in a result we want to put in  reverse as well
     ### for example: user 3 sweeps user 1, we want to include a result for
     ### user 3 - user 1 6-0 points
     ### user 1 - user 3 0-6 points
@@ -114,6 +120,7 @@ def create_event(request):
         form = EventForm()
     return render(request, 'add_event.html', {'form': form})
 
+
 def return_all_standings(request):
     all_records = Records.objects.all()
     context = {
@@ -151,14 +158,18 @@ def current_records(request, id):
 def all_records(request, game_night=None):
     records = Records.objects.filter(display=True)
     non_filtered_records = Records.objects.all()
+    all_decks = Decks.objects.all()
     all_players = set(list(Records.objects.values_list('user_id_id', flat=True)))
     stats = {}
     for player in all_players:
+        ids = all_decks.filter(user_id=player)
+        # Ok, here's where we're leaving it!
+        print(ids.values())
         stats[player] = {
                 'name': User.objects.filter(user_id=player).values('name')[0]['name'],
                 'points': Records.stats.total_points(player),
                 'sos': Records.stats.sos(player),
-                'esos': Records.stats.esos(player)
+                'esos': Records.stats.esos(player),
                 }
     runner_records = non_filtered_records.values('runner_status').annotate(runner_count=Count('runner_status')).order_by('-runner_status')
     corp_records = non_filtered_records.values('corp_status').annotate(corp_count=Count('corp_status')).order_by('-corp_status')
