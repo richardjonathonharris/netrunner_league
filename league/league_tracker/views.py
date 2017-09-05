@@ -98,7 +98,10 @@ def update_record(request, id):
     return render(request, 'update_records.html', {'form': form, 'id': id})
 
 def delete_record(request, id):
+    record = Records.objects.filter(id=id)
+    partner = record[0].linked_record
     Records.objects.filter(id=id).delete()
+    Records.objects.filter(id=partner).delete()
     return HttpResponseRedirect('/')
     
 
