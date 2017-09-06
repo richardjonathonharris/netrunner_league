@@ -24,6 +24,8 @@ class Decks(models.Model):
     runner_faction = models.CharField(max_length=250, null=True)
     corp_id = models.CharField(max_length=250, null=True)
     corp_faction = models.CharField(max_length=250, null=True)
+    class Meta:
+        unique_together = ('user_id', 'game')
 
 class StatsManager(models.Manager):
     def sos(self, user_id, event_id=None): # note we need to figure out a way to exclude BYEs
@@ -88,7 +90,6 @@ class Records(models.Model):
     corp_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True, default='WI')
     runner_status = models.CharField(max_length=2, choices=WIN_LOSE, null=True, default='WI')
     game = models.ForeignKey(Event, related_name='+', null=True, blank=True, on_delete=models.CASCADE)
-    deck = models.ForeignKey(Decks, on_delete=models.CASCADE, null=True)
     round_num = models.IntegerField(null=True, default=1, choices=choices)
     display = models.BooleanField(default=True)
     linked_record = models.IntegerField(null=True, default=1)

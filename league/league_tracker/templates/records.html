@@ -2,6 +2,13 @@
 {% load extras %}
 {% block content %}
 
+{% for k, v in faction_records.items|dictsortreversed:1 %}
+{{ k }} {{ v }}
+{% endfor %}
+<br/>
+{% for k, v in id_records.items|dictsortreversed:1 %}
+{{ k }} {{ v }}
+{% endfor %}
 <table>
     <tr>
         <th>Player Name</th>

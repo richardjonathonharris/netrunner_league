@@ -155,16 +155,51 @@ def current_records(request, id):
             }
     return render(request, 'standings.html', context)
 
+point_vals = {
+            'WI': 3,
+            'TW': 2,
+            'TI': 1,
+            'TL': 0,
+            'LO': 0
+            }
+
+def faction_records(records, decks):    
+    vals = {}
+    for record in records:
+        game_deck = decks.filter(user_id=record.user_id_id, game=record.game_id).first()
+        if game_deck.corp_faction not in vals.keys():
+            vals[game_deck.corp_faction] = point_vals[record.corp_status]
+        else:
+            vals[game_deck.corp_faction] += point_vals[record.corp_status]
+        if game_deck.runner_faction not in vals.keys():
+            vals[game_deck.runner_faction] = point_vals[record.runner_status]
+        else:
+            vals[game_deck.runner_faction] += point_vals[record.runner_status]
+    return vals
+
+def id_records(records, decks):
+    vals = {}
+    for record in records:
+        game_deck = decks.filter(user_id=record.user_id_id, game=record.game_id).first()
+        if game_deck.corp_id not in vals.keys():
+            vals[game_deck.corp_id] = point_vals[record.corp_status]
+        else:
+            vals[game_deck.corp_id] += point_vals[record.corp_status]
+        if game_deck.runner_id not in vals.keys():
+            vals[game_deck.runner_id] = point_vals[record.runner_status]
+        else:
+            vals[game_deck.runner_id] += point_vals[record.runner_status]
+    return vals
+
 def all_records(request, game_night=None):
-    records = Records.objects.filter(display=True)
     non_filtered_records = Records.objects.all()
+    records = non_filtered_records.filter(display=True)
     all_decks = Decks.objects.all()
     all_players = set(list(Records.objects.values_list('user_id_id', flat=True)))
+    faction_recs = faction_records(non_filtered_records, all_decks)
+    id_recs = id_records(non_filtered_records, all_decks)
     stats = {}
     for player in all_players:
-        ids = all_decks.filter(user_id=player)
-        # Ok, here's where we're leaving it!
-        print(ids.values())
         stats[player] = {
                 'name': User.objects.filter(user_id=player).values('name')[0]['name'],
                 'points': Records.stats.total_points(player),
@@ -192,5 +227,7 @@ def all_records(request, game_night=None):
             'records': records,
             'stats': stats,
             'win_rates': win_rates,
+            'faction_records': faction_recs,
+            'id_records': id_recs,
             }
     return render(request, 'records.html', context)
