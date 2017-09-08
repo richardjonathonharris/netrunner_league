@@ -3,3 +3,4 @@ netrunner_league/
 */__pycache__/
 __pycache__
 *.swp
+*.log

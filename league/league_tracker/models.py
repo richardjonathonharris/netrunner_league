@@ -57,7 +57,10 @@ class StatsManager(models.Manager):
                 points /= len(runner_results)
             denom += points
             num += 1
-        return denom/num
+        if num == 0:
+            return 0
+        else:
+            return denom/num
 
     def esos(self, user_id, event_id=None):
         own_records = self.filter(user_id_id=user_id)

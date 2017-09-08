@@ -77,11 +77,12 @@ WSGI_APPLICATION = 'league.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'django_db',
         'USER': 'root',
         'PASSWORD': os.environ['DBPASSWORD'],
-        'HOST': 'localhost',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
