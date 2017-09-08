@@ -27,6 +27,5 @@ urlpatterns = [
     url(r'^add_event/', views.create_event),
     url(r'^records/(?P<id>\d+)/$', views.records),
     url(r'^records/$', views.all_records),
-    url(r'^latest/(?P<id>\d+)/$', views.current_records),
     url(r'^$', views.index),
 ]

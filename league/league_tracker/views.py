@@ -130,20 +130,6 @@ def records(request, id):
             }
     return render(request, 'standings.html', context)
 
-def current_records(request, id):
-    current_night = Event.objects.all().aggregate(Max('pk'))['pk__max']
-    records = Records.objects.filter(user_id_id=id).filter(game_id=current_night)
-    sos = Records.stats.sos(id, current_night)
-    esos = Records.stats.esos(id, current_night)
-    user = User.objects.get(pk=id)
-    context = {
-            'records': records,
-            'user': user,
-            'sos': sos,
-            'esos': esos,
-            }
-    return render(request, 'standings.html', context)
-
 point_vals = {
             'WI': 3,
             'TW': 2,
