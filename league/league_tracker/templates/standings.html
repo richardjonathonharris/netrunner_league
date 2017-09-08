@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Showing results for {{ user.name }} @ SoS of {{ sos }} and @ eSoS of {{ esos }}</h1>
+<h4 class="text-center">{{ user.name }} <i>Strength of Schedule: {{ sos }}, Extended Strength of Schedule: {{ esos }}</i></h4>
 
-<table>
+<table class="table table-condensed">
     <tr>
         <th>Opponent</th>
         <th>Corporation</th>
@@ -20,5 +20,4 @@
     <td> {{ rec.round_num }}</td>
 </tr>
 {% endfor %}
-
 {% endblock %}

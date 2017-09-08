@@ -7,24 +7,13 @@ from django.http import HttpResponse, HttpResponseRedirect
 # Create your views here.
 
 def index(request): 
-    all_user = User.objects.all()
-    all_record = Records.objects.all()
-    all_deck = Decks.objects.all()
-    context = {
-            'user': all_user,
-            'record': all_record,
-            'deck': all_deck,
-            }
-    return render(request, 'index.html', context)
-
-def thanks(request):
-    return HttpResponse('<b>Thanks!</b>')
+    return render(request, 'index.html')
 
 def create_user(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
         form.save()
-        return HttpResponseRedirect('/thanks/')
+        return HttpResponseRedirect('/')
     else:
         form = UserForm()
     return render(request, 'add_user.html', {'form': form})

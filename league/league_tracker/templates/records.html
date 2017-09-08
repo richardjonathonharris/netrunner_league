@@ -2,14 +2,9 @@
 {% load extras %}
 {% block content %}
 
-{% for k, v in faction_records.items|dictsortreversed:1 %}
-{{ k }} {{ v }}
-{% endfor %}
-<br/>
-{% for k, v in id_records.items|dictsortreversed:1 %}
-{{ k }} {{ v }}
-{% endfor %}
-<table>
+<h3 class="text-center">Player Standings</h3>
+
+<table class="table table-condensed">
     <tr>
         <th>Player Name</th>
         <th>Total Points</th>
@@ -19,7 +14,7 @@
 
 {% for key, value in stats.items|dictsortreversed:"1.points" %}
 <tr>
-    <td>{{ value.name }} {{ key }}</td> 
+    <td><a href="/records/{{ key }}">{{ value.name }}</a></td> 
     <td>{{ value.points }}</td> 
     <td>{{ value.sos|floatformat:"2" }}</td> 
     <td>{{ value.esos|floatformat:"2" }}</td>
@@ -27,8 +22,10 @@
 {% endfor %}
 </table>
 
-<table>
-    <tr>
+<h3 class="text-center">Match History</h3>
+
+<table class="table table-condensed">
+    <tr class="text-center">
         <th>Player</th>
         <th>Opponent</th>
         <th>As Runner</th>
@@ -43,12 +40,12 @@
 {% regroup records|dictsort:"game_id" by game as game_list %}
 {% for game in game_list %}
 <tr>
-    <td colspan="6">{{ game.grouper }}</td>
+    <td colspan="6" class="success text-center">{{ game.grouper }}</td>
 </tr>
 {% regroup game.list|dictsortreversed:"round_num" by round_num as round_list %}
 {% for round in round_list %}
 <tr>
-    <td colspan="6">{{ round.grouper }}</td>
+    <td colspan="6" class="info text-center">Round {{ round.grouper }}</td>
 </tr>
 {% for item in round.list %}
 <tr>
@@ -64,37 +61,57 @@
 {% endfor %}
 </table>
 
-<table>
+<h3 class="text-center">Win Rates</h3>
+
+<table class="table table-condensed">
     <tr>
         <th> </th>
         <th>Runner</th>
         <th>Corporation</th>
     </tr>
     <tr>
-        <td>Wins</td>
+        <td>Round Wins</td>
         <td>{{ win_rates.WI.runner }}</td>
         <td>{{ win_rates.WI.corp }}</td>
     </tr>
     <tr>
-        <td>Losses</td>
-        <td>{{ win_rates.LO.runner }}</td>
-        <td>{{ win_rates.LO.corp }}</td>
-    </tr>
-    <tr>
-        <td>Timed Wins</td>
+        <td>Round Timed Wins</td>
         <td>{{ win_rates.TW.runner }}</td>
         <td>{{ win_rates.TW.corp }}</td>
     </tr>
     <tr>
-        <td>Timed Losses</td>
-        <td>{{ win_rates.TL.runner }}</td>
-        <td>{{ win_rates.TL.corp }}</td>
-    </tr>
-    <tr>
-        <td>Ties</td>
+        <td>Round Ties</td>
         <td>{{ win_rates.TI.runner }}</td>
         <td>{{ win_rates.TI.corp }}</td>
     </tr>
+</table>
+
+<h3 class="text-center">Deck and Faction Match-Ups</h3>
+
+<table class="table table-condensed">
+    <tr>
+        <th>Faction</th>
+        <th>Points</th>
+    </tr>
+    {% for k, v in faction_records.items|dictsortreversed:1 %}
+    <tr>
+        <td>{{ k|title }}</td>
+        <td>{{ v }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<table class="table table-condensed">
+    <tr>
+        <th>ID</th>
+        <th>Points</th>
+    </tr>
+    {% for k, v in id_records.items|dictsortreversed:1 %}
+    <tr>
+        <td>{{ k|title }}</td>
+        <td>{{ v }}</td>
+    </tr>
+    {% endfor %}
 </table>
 
 {% endblock %}
