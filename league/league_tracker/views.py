@@ -167,12 +167,8 @@ def id_records(records, decks):
     return vals
 
 def all_records(request, game_night=None):
-    non_filtered_records = Records.objects.all()
-    records = non_filtered_records.filter(display=True)
-    all_decks = Decks.objects.all()
+    records = Records.objects.filter(display=True)
     all_players = set(list(Records.objects.values_list('user_id_id', flat=True)))
-    faction_recs = faction_records(non_filtered_records, all_decks)
-    id_recs = id_records(non_filtered_records, all_decks)
     stats = {}
     for player in all_players:
         stats[player] = {
@@ -181,6 +177,17 @@ def all_records(request, game_night=None):
                 'sos': Records.stats.sos(player),
                 'esos': Records.stats.esos(player),
                 }
+    context = {
+            'records': records,
+            'stats': stats,
+            }
+    return render(request, 'records.html', context)
+
+def statistics(request):
+    non_filtered_records = Records.objects.all()
+    all_decks = Decks.objects.all()
+    faction_recs = faction_records(non_filtered_records, all_decks)
+    id_recs = id_records(non_filtered_records, all_decks)
     runner_records = non_filtered_records.values('runner_status').annotate(runner_count=Count('runner_status')).order_by('-runner_status')
     corp_records = non_filtered_records.values('corp_status').annotate(corp_count=Count('corp_status')).order_by('-corp_status')
     runner = [record for record in runner_records]
@@ -199,10 +206,8 @@ def all_records(request, game_night=None):
                     'corp': 0
                     }
     context = {
-            'records': records,
-            'stats': stats,
             'win_rates': win_rates,
             'faction_records': faction_recs,
             'id_records': id_recs,
             }
-    return render(request, 'records.html', context)
+    return render(request, 'statistics.html', context)

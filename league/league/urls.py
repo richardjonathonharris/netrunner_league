@@ -22,10 +22,11 @@ urlpatterns = [
     url(r'^add_user/', views.create_user),
     url(r'^add_deck/', views.create_deck),
     url(r'^add_record/', views.create_record),
+    url(r'^add_event/', views.create_event),
     url(r'^update_record/(?P<id>\d+)/$', views.update_record),
     url(r'^delete_record/(?P<id>\d+)/$', views.delete_record),
-    url(r'^add_event/', views.create_event),
     url(r'^records/(?P<id>\d+)/$', views.records),
     url(r'^records/$', views.all_records),
+    url(r'^statistics/$', views.statistics),
     url(r'^$', views.index),
 ]
