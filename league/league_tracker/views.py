@@ -54,11 +54,11 @@ def create_record(request):
                 }
         for stat in ['runner_status', 'corp_status']:
             reverse_form[stat] = flip_dict[request.POST[stat]]
-        reverse_form['display'] = False
         form = RecordForm(reverse_form)
         form.save()
         opp_record = Records.objects.last()
         opp_record.linked_record = opp_record.pk - 1
+        opp_record.display = False
         opp_record.save()
         user_record = Records.objects.get(pk=opp_record.pk-1)
         user_record.linked_record = user_record.pk + 1
