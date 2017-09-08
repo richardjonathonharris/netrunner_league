@@ -21,4 +21,20 @@
     <td class="text-center"> {{ rec.round_num }}</td>
 </tr>
 {% endfor %}
+
+<table class="table table-condensed">
+    <tr>
+        <th>Event</th>
+        <th class="text-center">Runner ID</th>
+        <th class="text-center">Corporation ID</th>
+    </tr>
+{% for d in deck %}
+    <tr>
+        <td>{{ d.game }}</td>
+        <td class="text-center">{{ d.runner_id }}</td>
+        <td class="text-center">{{ d.corp_id }}</td>
+    </tr>
+{% endfor %}
+</table>
+
 {% endblock %}

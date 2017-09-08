@@ -122,11 +122,13 @@ def records(request, id):
     sos = Records.stats.sos(id)
     esos = Records.stats.esos(id)
     user = User.objects.get(pk=id)
+    decks = Decks.objects.filter(user_id_id=id).order_by('-game')
     context = {
             'records': records,
             'user': user,
             'sos': sos,
             'esos': esos,
+            'deck': decks,
             }
     return render(request, 'standings.html', context)
 
