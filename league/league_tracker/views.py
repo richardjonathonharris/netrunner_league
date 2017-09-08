@@ -118,7 +118,7 @@ def return_all_standings(request):
     return render(request, 'index.html', context)
 
 def records(request, id):
-    records = Records.objects.filter(user_id_id=id)
+    records = Records.objects.filter(user_id_id=id).order_by('-game', 'round_num')
     sos = Records.stats.sos(id)
     esos = Records.stats.esos(id)
     user = User.objects.get(pk=id)
@@ -142,33 +142,36 @@ def faction_records(records, decks):
     vals = {}
     for record in records:
         game_deck = decks.filter(user_id=record.user_id_id, game=record.game_id).first()
-        if game_deck.corp_faction not in vals.keys():
-            vals[game_deck.corp_faction] = point_vals[record.corp_status]
-        else:
-            vals[game_deck.corp_faction] += point_vals[record.corp_status]
-        if game_deck.runner_faction not in vals.keys():
-            vals[game_deck.runner_faction] = point_vals[record.runner_status]
-        else:
-            vals[game_deck.runner_faction] += point_vals[record.runner_status]
+        if game_deck is not None:
+            if game_deck.corp_faction not in vals.keys():
+                vals[game_deck.corp_faction] = point_vals[record.corp_status]
+            else:
+                vals[game_deck.corp_faction] += point_vals[record.corp_status]
+            if game_deck.runner_faction not in vals.keys():
+                vals[game_deck.runner_faction] = point_vals[record.runner_status]
+            else:
+                vals[game_deck.runner_faction] += point_vals[record.runner_status]
     return vals
 
 def id_records(records, decks):
     vals = {}
     for record in records:
         game_deck = decks.filter(user_id=record.user_id_id, game=record.game_id).first()
-        if game_deck.corp_id not in vals.keys():
-            vals[game_deck.corp_id] = point_vals[record.corp_status]
-        else:
-            vals[game_deck.corp_id] += point_vals[record.corp_status]
-        if game_deck.runner_id not in vals.keys():
-            vals[game_deck.runner_id] = point_vals[record.runner_status]
-        else:
-            vals[game_deck.runner_id] += point_vals[record.runner_status]
+        if game_deck is not None:
+            if game_deck.corp_id not in vals.keys():
+                vals[game_deck.corp_id] = point_vals[record.corp_status]
+            else:
+                vals[game_deck.corp_id] += point_vals[record.corp_status]
+            if game_deck.runner_id not in vals.keys():
+                vals[game_deck.runner_id] = point_vals[record.runner_status]
+            else:
+                vals[game_deck.runner_id] += point_vals[record.runner_status]
     return vals
 
 def all_records(request, game_night=None):
     records = Records.objects.all().filter(display=True)
     all_players = set(list(Records.objects.values_list('user_id_id', flat=True)))
+    all_players = [player for player in all_players if player!=1]
     stats = {}
     for player in all_players:
         stats[player] = {
