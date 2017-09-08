@@ -167,7 +167,7 @@ def id_records(records, decks):
     return vals
 
 def all_records(request, game_night=None):
-    records = Records.objects.filter(display=True)
+    records = Records.objects.all().filter(display=True)
     all_players = set(list(Records.objects.values_list('user_id_id', flat=True)))
     stats = {}
     for player in all_players:
@@ -184,7 +184,7 @@ def all_records(request, game_night=None):
     return render(request, 'records.html', context)
 
 def statistics(request):
-    non_filtered_records = Records.objects.all()
+    non_filtered_records = Records.objects.exclude(user_id_id=1)
     all_decks = Decks.objects.all()
     faction_recs = faction_records(non_filtered_records, all_decks)
     id_recs = id_records(non_filtered_records, all_decks)

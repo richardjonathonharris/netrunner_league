@@ -12,7 +12,7 @@
         <th>Extended Strength of Schedule</th>
     </tr>
 
-{% for key, value in stats.items|dictsortreversed:"1.points" %}
+{% for key, value in stats.items|dictsortreversed:"1.sos"|dictsortreversed:"1.points" %}
 <tr>
     <td><a href="/records/{{ key }}">{{ value.name }}</a></td> 
     <td>{{ value.points }}</td> 

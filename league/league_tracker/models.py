@@ -28,29 +28,25 @@ class Decks(models.Model):
         unique_together = ('user_id', 'game')
 
 class StatsManager(models.Manager):
-    def sos(self, user_id, event_id=None): # note we need to figure out a way to exclude BYEs
+    def sos(self, user_id, event_id=None): 
         if not event_id:
             own_records = self.filter(user_id_id=user_id)
-            opponents = [rec.opponent_id_id for rec in own_records]
-            opponents_records = self.filter(user_id_id__in=opponents).exclude(opponent_id_id=user_id)
+            opponents = [rec.opponent_id_id for rec in own_records if rec.opponent_id_id!=1]
+            opponents_records = self.filter(user_id_id__in=opponents)
         else:
             own_records = self.filter(user_id_id=user_id).filter(game_id=event_id)
-            opponents = [rec.opponent_id_id for rec in own_records]
-            opponents_records = self.filter(user_id_id__in=opponents).filter(game_id=event_id).exclude(opponent_id_id=user_id)
+            opponents = [rec.opponent_id_id for rec in own_records if rec.opponent_id_id!=1]
+            opponents_records = self.filter(user_id_id__in=opponents).filter(game_id=event_id)
         denom = 0
         num = 0
-        for opponent in opponents:
+        for opponent in opponents: 
             runner_results = list(opponents_records.filter(user_id_id=opponent).values_list('runner_status', flat=True))
             corp_results = list(opponents_records.filter(user_id_id=opponent).values_list('corp_status', flat=True))
             points = 0
             for result in [runner_results, corp_results]:
                 points += sum([3 for item in result if item == 'WI']) 
-                if opponent == 21:
-                    print(result) # ok SOS is borked here. What's going on?
                 points += sum([2 for item in result if item == 'TW'])
                 points += sum([1 for item in result if item == 'TI'])
-            if user_id == 17:
-                print('opponent: {}, points: {}'.format(opponent, points))
             if len(runner_results) == 0:
                 points /= 1
             else:
@@ -64,7 +60,7 @@ class StatsManager(models.Manager):
 
     def esos(self, user_id, event_id=None):
         own_records = self.filter(user_id_id=user_id)
-        opponents = [rec.opponent_id_id for rec in own_records]
+        opponents = [rec.opponent_id_id for rec in own_records if rec.opponent_id_id!=1]
         opp_sos = [self.sos(opp) for opp in opponents]
         if len(opp_sos) == 0:
             return 0
