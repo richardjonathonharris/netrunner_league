@@ -13,6 +13,6 @@ from django.core.wsgi import get_wsgi_application
 
 sys.path.insert(0, '/opt/python/current/app')
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "league.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "league.league.settings")
 
 application = get_wsgi_application()
